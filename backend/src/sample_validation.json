@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "CompanyId": {
+      "type": "string"
+    },
+    "BankEntryDate": {
+      "type": "string"
+    },
+    "BankEntryText": {
+      "type": "string"
+    },
+    "BankEntryAmount": {
+      "type": "string"
+    },
+    "AccountName": {
+      "type": "string"
+    },
+    "AccountNumber": {
+      "type": "string"
+    },
+    "AccountTypeName": {
+      "type": "string",
+      "enum": ["Balance", "Profit and Loss"]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "CompanyId",
+    "BankEntryDate",
+    "BankEntryText",
+    "BankEntryAmount",
+    "AccountName",
+    "AccountNumber",
+    "AccountTypeName"
+  ]
+}

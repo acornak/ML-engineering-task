@@ -1,0 +1,60 @@
+{
+  "testEventValid": [
+    {
+      "CompanyId": "int:a055470",
+      "BankEntryDate": "2016-02-29",
+      "BankEntryText": "str:6cd08e4 int:49fed34",
+      "BankEntryAmount": "> -1000",
+      "AccountName": "str:1e82557",
+      "AccountNumber": "9900",
+      "AccountTypeName": "Balance"
+    },
+    {
+      "CompanyId": "int:a055470",
+      "BankEntryDate": "2016-02-29",
+      "BankEntryText": "str:6cd08e4 int:49fed34",
+      "BankEntryAmount": "> -1000",
+      "AccountName": "str:9ce853c",
+      "AccountNumber": "3115",
+      "AccountTypeName": "Profit and Loss"
+    },
+    {
+      "CompanyId": "int:a055470",
+      "BankEntryDate": "2016-02-29",
+      "BankEntryText": "str:38248d2",
+      "BankEntryAmount": "> -100",
+      "AccountName": "str:a9f0788",
+      "AccountNumber": "2240",
+      "AccountTypeName": "Profit and Loss"
+    }
+  ],
+  "testEventInvalid": [
+    {
+      "CompanyId": "int:a055470",
+      "BankEntryDate": "2016-02-29",
+      "BankEntryText": "str:6cd08e4 int:49fed34",
+      "BankEntryAmount": "> -1000",
+      "AccountName": "str:1e82557",
+      "AccountNumber": "9900",
+      "AccountTypeName": "Balance"
+    },
+    {
+      "CompanyId": "int:a055470",
+      "BankEntryDate": "2016-02-29",
+      "BankEntryText": "str:6cd08e4 int:49fed34",
+      "BankEntryAmount": "> -1000",
+      "AccountName": "str:1e82557",
+      "AccountNumber": "9900",
+    },
+    {
+      "CompanyId": "int:a055470",
+      "BankEntryDate": "2016-02-29",
+      "BankEntryText": "str:6cd08e4 int:49fed34",
+      "BankEntryAmount": "> -1000",
+      "AccountName": "str:1e82557",
+      "AccountNumber": "9900",
+      "AccountTypeName": "Balance",
+      "InvalidInput": "error"
+    }
+  ]
+}
