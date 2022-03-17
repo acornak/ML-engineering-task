@@ -1,0 +1,15 @@
+{
+  "testEventValid":{
+    "CompanyId": "int:a055470",
+    "BankEntryDate": "2016-02-29",
+    "BankEntryText": "str:6cd08e4 int:49fed34",
+    "BankEntryAmount": "> -1000"
+},
+  "testEventInvalid":{
+    "CompanyId": "int:a055470",
+    "BankEntryDate": "2016-02-29",
+    "BankEntryText": "str:6cd08e4 int:49fed34",
+    "BankEntryAmount": "> -1000",
+    "AccountName": "str:1e82557"
+  }
+}
