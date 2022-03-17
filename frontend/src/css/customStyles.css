@@ -1,0 +1,96 @@
+@charset "utf-8";
+@media (min-width: 992px) {
+  .container {
+    width: 67%;
+  }
+}
+.container {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.page-heading {
+  -webkit-box-shadow: 0 4px 20px rgba(0, 122, 202, 0.25);
+  -moz-box-shadow: 0 4px 20px rgba(0, 122, 202, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 122, 202, 0.25);
+  border-radius: 20px 20px 0 20px;
+  color: #fff;
+  position: relative;
+  margin: 0 0 35px 0;
+  padding: 6% 25% 6% 8%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.panel {
+  padding: 3% 3% 3% 4%;
+}
+
+.page-heading:before {
+  content: "";
+  width: 142px;
+  height: 195px;
+  display: block;
+  position: absolute;
+  right: 14%;
+  top: 23%;
+  z-index: 2;
+}
+.page-heading:after {
+  content: "";
+  width: 160%;
+  height: 100%;
+  background: #0081d6;
+  background: -webkit-radial-gradient(circle, #0081d6 0%, #007aca 100%);
+  background: -o-radial-gradient(circle, #0081d6 0%, #007aca 100%);
+  background: radial-gradient(circle, #0081d6 0%, #007aca 100%);
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.page-heading .short-blue-sep {
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+  max-width: 145px;
+  margin: 20px 0 25px;
+}
+/* @media (max-width: 992px) {
+  .page-heading .short-blue-sep {
+    display: none;
+  }
+} */
+.page-heading h1 {
+  font-size: 28px;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+.page-heading .btn.btn-default {
+  border: 0;
+  font-size: 16px;
+  font-weight: 700;
+  min-width: 335px;
+  line-height: 56px;
+  padding-top: 0;
+  padding-bottom: 0;
+  -webkit-box-shadow: 0px 15px 25px rgba(0, 51, 102, 0.15);
+  -moz-box-shadow: 0px 15px 25px rgba(0, 51, 102, 0.15);
+  box-shadow: 0px 15px 25px rgba(0, 51, 102, 0.15);
+}
+
+button[role="menuitem"] {
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+button[role="menuitem"]:hover {
+  background: #dceefa;
+}
+
+textarea {
+  width: 98%;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box; /* Opera/IE 8+ */
+}
