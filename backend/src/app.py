@@ -1,6 +1,8 @@
 """
 Using flask to define and initialize both endpoints
 """
+import os
+import json
 from flask import Flask, Response, request
 # from json_validation import JSONValidation
 from json_validation import JSONValidation
@@ -48,7 +50,7 @@ def predict():
 
     # step 2: run predction
 
-    return Response("Success", status=200)
+    return Response('Success', status=200)
 
 
 @app.route('/monitor', methods=['GET'])
@@ -58,7 +60,9 @@ def monitor():
     Only after 10k samples, else returns error.
     :return:
     """
-    return "monitor"
+    return Response("Success", status=200)
 
 
-app.run(port=5000)
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

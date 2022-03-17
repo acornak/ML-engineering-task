@@ -30,6 +30,7 @@ class JSONValidation:
         """
         schema_path = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
+            "validation",
             f"{self.json_schema}_validation.json"
         )
 
