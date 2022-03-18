@@ -6,7 +6,7 @@ describe("test suite for Predict component", () => {
   it("test loaded component", () => {
     render(<Monitor />);
 
-    const header = screen.getByText("Check model accuracy");
+    const header = screen.getByText("Analyse model accuracy");
     const description = screen.getByText("Not enough data to evaluate model!");
 
     expect(header).toBeInTheDocument();

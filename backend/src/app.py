@@ -5,6 +5,8 @@ import os
 import json
 from flask import Flask, Response, request
 # from json_validation import JSONValidation
+from flask_cors import cross_origin
+
 from json_validation import JSONValidation
 
 app = Flask('Online Learning API')
@@ -12,6 +14,7 @@ samples_path = "model/samples.csv"
 
 
 @app.route('/sample', methods=['POST'])
+@cross_origin()
 def sample():
     """
     Function to process sample - accepts only POST requests.
@@ -35,6 +38,7 @@ def sample():
 
 
 @app.route('/predict', methods=['POST'])
+@cross_origin()
 def predict():
     """
     Function to process predictions - accepts only POST requests.
@@ -54,6 +58,7 @@ def predict():
 
 
 @app.route('/monitor', methods=['GET'])
+@cross_origin()
 def monitor():
     """
     Report the precision and recall of the last 1000 samples.
