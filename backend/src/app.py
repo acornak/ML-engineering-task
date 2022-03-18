@@ -3,7 +3,7 @@ Using flask to define and initialize both endpoints
 """
 import os
 import json
-from flask import Flask, Response, request
+from flask import Flask, Response, request, jsonify
 # from json_validation import JSONValidation
 from flask_cors import cross_origin
 
@@ -34,7 +34,7 @@ def sample():
 
     # step 2: append data to samples.csv
 
-    return Response("Success", status=200)
+    return Response(["Success"], status=200)
 
 
 @app.route('/predict', methods=['POST'])
@@ -54,7 +54,8 @@ def predict():
 
     # step 2: run predction
 
-    return Response('Success', status=200)
+    # return Response("['Balance']", status=200)
+    return jsonify(["Balance"])
 
 
 @app.route('/monitor', methods=['GET'])

@@ -10,6 +10,7 @@ const PredictModal = (props) => {
   // const { handleSubmit, resetField } = methods;
   const [sentRequest, setSentRequest] = useState(false);
   const [requestSuccess, setRequestSuccess] = useState();
+  const [predictedValue, setPredictedValue] = useState();
   const methods = useFormContext();
 
   const keysArray = [
@@ -31,10 +32,10 @@ const PredictModal = (props) => {
       };
       const result = await axios(config);
       console.log(result);
+      setPredictedValue(result.data[0]);
       setSentRequest(false);
       setRequestSuccess(true);
-    } catch (error) {
-      console.log(error);
+    } catch {
       setSentRequest(false);
       setRequestSuccess(false);
     }
@@ -42,6 +43,7 @@ const PredictModal = (props) => {
 
   const onSubmit = (data) => {
     setSentRequest(true);
+    setRequestSuccess();
     sendRequest(data.predict);
   };
 
@@ -56,6 +58,16 @@ const PredictModal = (props) => {
   if (!showPredictModal) {
     return null;
   }
+
+  const predicted = () => {
+    return (
+      <div>
+        <h3>
+          <b>Predicted AccountNumber: {predictedValue}</b>
+        </h3>
+      </div>
+    );
+  };
 
   return (
     <div className="modal">
@@ -72,8 +84,12 @@ const PredictModal = (props) => {
         </div>
         <div className="row">
           {sentRequest && <Spinner />}
-          {requestSuccess === true && "Success"}
-          {requestSuccess === false && "Something went wrong..."}
+          {requestSuccess === true && predicted()}
+          {requestSuccess === false && (
+            <div>
+              <h3>Something went wrong... Try again later.</h3>
+            </div>
+          )}
         </div>
         <div
           className="modal-footer"
