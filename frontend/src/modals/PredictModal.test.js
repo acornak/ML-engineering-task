@@ -49,9 +49,7 @@ describe("test suite for Predict Modal component", () => {
 
   it("test predict request - success", async () => {
     const mock = new MockAdapter(axios);
-    mock.onPost("http://localhost:5000/predict").reply(200, {
-      status: "Success",
-    });
+    mock.onPost("http://localhost:5000/predict").reply(200, ["Balance"]);
 
     render(
       <RenderWithFormProvider>
@@ -74,15 +72,13 @@ describe("test suite for Predict Modal component", () => {
       fireEvent.click(button);
     });
 
-    const success = screen.getByText("Success");
+    const success = screen.getByText("Predicted AccountNumber: Balance");
     expect(success).toBeInTheDocument();
   });
 
   it("test predict request - error", async () => {
     const mock = new MockAdapter(axios);
-    mock.onPost("http://localhost:5000/predict").reply(400, {
-      status: "Error",
-    });
+    mock.onPost("http://localhost:5000/predict").reply(400, "Error");
 
     render(
       <RenderWithFormProvider>
@@ -98,14 +94,16 @@ describe("test suite for Predict Modal component", () => {
       userEvent.type(inputField, "test");
     });
 
-    const button = screen.getByText("Send data to predict");
+    const button = screen.queryByText("Send data to predict");
     expect(button).toBeInTheDocument();
 
     await waitFor(() => {
       fireEvent.click(button);
     });
 
-    const success = screen.getByText("Something went wrong...");
+    const success = screen.getByText(
+      "Something went wrong... Try again later."
+    );
     expect(success).toBeInTheDocument();
   });
 });

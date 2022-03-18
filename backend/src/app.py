@@ -2,11 +2,9 @@
 Using flask to define and initialize both endpoints
 """
 import os
-import json
-from flask import Flask, Response, request
-# from json_validation import JSONValidation
+from flask import Flask, Response, request, jsonify
 from flask_cors import cross_origin
-
+from model.sample_handling import SampleHandling
 from json_validation import JSONValidation
 
 app = Flask('Online Learning API')
@@ -32,9 +30,14 @@ def sample():
         if not status:
             return Response(message, status=400)
 
+    sample_handling = SampleHandling(request_data)
+    sample_handling.merge_data()
+
     # step 2: append data to samples.csv
 
-    return Response("Success", status=200)
+    # step 3: train model with new data
+
+    return Response(["Success"], status=200)
 
 
 @app.route('/predict', methods=['POST'])
@@ -54,7 +57,8 @@ def predict():
 
     # step 2: run predction
 
-    return Response('Success', status=200)
+    # return Response("['Balance']", status=200)
+    return jsonify(["Balance"])
 
 
 @app.route('/monitor', methods=['GET'])

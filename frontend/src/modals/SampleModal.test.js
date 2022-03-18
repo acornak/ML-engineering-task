@@ -51,9 +51,7 @@ describe("test suite for Predict Modal component", () => {
 
   it("test send sample request - success", async () => {
     const mock = new MockAdapter(axios);
-    mock.onPost("http://localhost:5000/sample").reply(200, {
-      status: "Success",
-    });
+    mock.onPost("http://localhost:5000/sample").reply(200, "Success");
 
     render(
       <RenderWithFormProvider>
@@ -75,16 +73,14 @@ describe("test suite for Predict Modal component", () => {
     });
 
     expect(setSampleResponse).toHaveBeenCalledWith({
-      message: { status: "Success" },
+      message: "Success",
       status: "success",
     });
   });
 
   it("test send sample request - failed", async () => {
     const mock = new MockAdapter(axios);
-    mock.onPost("http://localhost:5000/sample").reply(400, {
-      status: "Error",
-    });
+    mock.onPost("http://localhost:5000/sample").reply(400, "Error");
 
     render(
       <RenderWithFormProvider>
@@ -106,7 +102,7 @@ describe("test suite for Predict Modal component", () => {
     });
 
     expect(setSampleResponse).toHaveBeenCalledWith({
-      message: { status: "Error" },
+      message: "Error",
       status: "danger",
     });
   });
