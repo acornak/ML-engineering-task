@@ -13,7 +13,7 @@ class JSONValidation:
     """
     def __init__(self, json_schema, json_to_validate):
         """
-        Initialization func for JSON Validation obj.
+        Initialization func for JSON Validation class.
         :param json_schema: schema used for validation - name of endpoint is enough!
         :type json_schema: str
         :param json_to_validate: from POST request to one of the endpoints

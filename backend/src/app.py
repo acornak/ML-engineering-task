@@ -6,7 +6,7 @@ import json
 from flask import Flask, Response, request, jsonify
 # from json_validation import JSONValidation
 from flask_cors import cross_origin
-
+from model.sample_handling import SampleHandling
 from json_validation import JSONValidation
 
 app = Flask('Online Learning API')
@@ -33,6 +33,8 @@ def sample():
             return Response(message, status=400)
 
     # step 2: append data to samples.csv
+
+    # step 3: train model with new data
 
     return Response(["Success"], status=200)
 

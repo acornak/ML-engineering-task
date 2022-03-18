@@ -38,7 +38,7 @@ class AppTestCase(unittest.TestCase):
         response = tester.post("/predict", data=data, content_type="application/json")
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual("Success", response.data.decode())
+        self.assertEqual(json.dumps("[\"Balance\"]\n"), json.dumps(response.data.decode()))
 
     def test_predict_invalid(self):
         tester = app.test_client(self)
