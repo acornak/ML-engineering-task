@@ -2,9 +2,7 @@
 Using flask to define and initialize both endpoints
 """
 import os
-import json
 from flask import Flask, Response, request, jsonify
-# from json_validation import JSONValidation
 from flask_cors import cross_origin
 from model.sample_handling import SampleHandling
 from json_validation import JSONValidation
@@ -31,6 +29,9 @@ def sample():
         status, message = json_validation.validate_json()
         if not status:
             return Response(message, status=400)
+
+    sample_handling = SampleHandling(request_data)
+    sample_handling.merge_data()
 
     # step 2: append data to samples.csv
 
