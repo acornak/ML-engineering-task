@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useFormContext } from "react-hook-form";
 import Spinner from "../css/Spinner";
 import PredictForm from "./PredictForm";
 import "../css/modal.css";
 
 const PredictModal = (props) => {
-  const { showPredictModal, setShowPredictModal, methods } = props;
-  const { handleSubmit, resetField } = methods;
+  const { showPredictModal, setShowPredictModal } = props;
+  // const { handleSubmit, resetField } = methods;
   const [sentRequest, setSentRequest] = useState(false);
   const [requestSuccess, setRequestSuccess] = useState();
+  const methods = useFormContext();
 
   const keysArray = [
     "CompanyId",
@@ -44,11 +46,11 @@ const PredictModal = (props) => {
   };
 
   const onClose = () => {
+    setShowPredictModal(false);
     keysArray.map((id) => {
-      resetField(`predict.${id}`);
+      methods.resetField(`predict.${id}`);
     });
     setRequestSuccess();
-    setShowPredictModal(false);
   };
 
   if (!showPredictModal) {
@@ -82,7 +84,7 @@ const PredictModal = (props) => {
         >
           <button
             className="btn btn-lg btn-primary"
-            onClick={handleSubmit(onSubmit)}
+            onClick={methods.handleSubmit(onSubmit)}
             type="button"
           >
             Send data to predict

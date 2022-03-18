@@ -38,13 +38,11 @@ const App = () => {
               setShowSampleModal={setShowSampleModal}
               showSampleModal={showSampleModal}
               setSampleResponse={setSampleResponse}
-              methods={methods}
             />
             <Predict setShowPredictModal={setShowPredictModal} />
             <PredictModal
               setShowPredictModal={setShowPredictModal}
               showPredictModal={showPredictModal}
-              methods={methods}
             />
             <Monitor />
           </FormProvider>

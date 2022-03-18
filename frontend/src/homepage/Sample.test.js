@@ -3,10 +3,16 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Sample from "./Sample";
 
 const setShowSampleModal = jest.fn();
+const setSampleResponse = jest.fn();
 
 describe("test suite for Sample component", () => {
   it("test loaded component", () => {
-    render(<Sample setShowSampleModal={setShowSampleModal} />);
+    render(
+      <Sample
+        setShowSampleModal={setShowSampleModal}
+        setSampleResponse={setSampleResponse}
+      />
+    );
 
     const header = screen.getByText("Make the model Great Again!");
     const description = screen.getByText(
@@ -17,7 +23,12 @@ describe("test suite for Sample component", () => {
     expect(description).toBeInTheDocument();
   });
   it("test show Sample Modal", () => {
-    render(<Sample setShowSampleModal={setShowSampleModal} />);
+    render(
+      <Sample
+        setShowSampleModal={setShowSampleModal}
+        setSampleResponse={setSampleResponse}
+      />
+    );
 
     const button = screen.getByText("Add Sample");
     expect(button).toBeInTheDocument();

@@ -1,21 +1,24 @@
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
 import SampleModal from "./SampleModal";
+import RenderWithFormProvider from "../functions/RenderWithFormProvider";
 
 const setShowSampleModal = jest.fn();
-const methods = {
-  register: jest.fn(),
-  handleSubmit: jest.fn(),
-};
+const setSampleResponse = jest.fn();
 
 describe("test suite for Predict Modal component", () => {
   it("test loaded component", async () => {
     render(
-      <SampleModal
-        showSampleModal
-        setShowSampleModal={setShowSampleModal}
-        methods={methods}
-      />
+      <RenderWithFormProvider>
+        <SampleModal
+          showSampleModal
+          setShowSampleModal={setShowSampleModal}
+          setSampleResponse={setSampleResponse}
+        />
+      </RenderWithFormProvider>
     );
 
     const modalHeader = screen.getByText(
@@ -33,13 +36,78 @@ describe("test suite for Predict Modal component", () => {
 
   it("test closed modal", () => {
     render(
-      <SampleModal
-        showSampleModal={false}
-        setShowSampleModal={setShowSampleModal}
-      />
+      <RenderWithFormProvider>
+        <SampleModal
+          showSampleModal={false}
+          setShowSampleModal={setShowSampleModal}
+          setSampleResponse={setSampleResponse}
+        />
+      </RenderWithFormProvider>
     );
 
     const button = screen.queryByText("Add Sample to Dataset");
     expect(button).not.toBeInTheDocument();
+  });
+
+  it("test send sample request - success", async () => {
+    const mock = new MockAdapter(axios);
+    mock.onPost("http://localhost:5000/sample").reply(200, {
+      status: "Success",
+    });
+
+    render(
+      <RenderWithFormProvider>
+        <SampleModal
+          showSampleModal
+          setShowSampleModal={setShowSampleModal}
+          setSampleResponse={setSampleResponse}
+        />
+      </RenderWithFormProvider>
+    );
+
+    const button = screen.queryByText("Add Sample to Dataset");
+    const textarea = screen.getByRole("textbox");
+    userEvent.type(textarea, "test");
+
+    await waitFor(() => {
+      expect(textarea).toHaveValue("test");
+      fireEvent.click(button);
+    });
+
+    expect(setSampleResponse).toHaveBeenCalledWith({
+      message: { status: "Success" },
+      status: "success",
+    });
+  });
+
+  it("test send sample request - failed", async () => {
+    const mock = new MockAdapter(axios);
+    mock.onPost("http://localhost:5000/sample").reply(400, {
+      status: "Error",
+    });
+
+    render(
+      <RenderWithFormProvider>
+        <SampleModal
+          showSampleModal
+          setShowSampleModal={setShowSampleModal}
+          setSampleResponse={setSampleResponse}
+        />
+      </RenderWithFormProvider>
+    );
+
+    const button = screen.queryByText("Add Sample to Dataset");
+    const textarea = screen.getByRole("textbox");
+    userEvent.type(textarea, "test");
+
+    await waitFor(() => {
+      expect(textarea).toHaveValue("test");
+      fireEvent.click(button);
+    });
+
+    expect(setSampleResponse).toHaveBeenCalledWith({
+      message: { status: "Error" },
+      status: "danger",
+    });
   });
 });
