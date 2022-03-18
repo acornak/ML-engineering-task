@@ -2,6 +2,13 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/src/App.js",
+      "<rootDir>/src/index.js",
+      "<rootDir>/src/components/layout/InitWidgetScript.js"
+    ]
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",

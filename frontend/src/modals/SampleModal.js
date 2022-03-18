@@ -1,16 +1,15 @@
 import React from "react";
 import axios from "axios";
+import { useFormContext } from "react-hook-form";
 import "../css/modal.css";
 
 const SampleModal = (props) => {
-  const { showSampleModal, setShowSampleModal, methods, setSampleResponse } =
-    props;
+  const { showSampleModal, setShowSampleModal, setSampleResponse } = props;
+  const methods = useFormContext();
 
   if (!showSampleModal) {
     return null;
   }
-
-  const { handleSubmit, resetField } = methods;
 
   const sendRequest = async (data) => {
     try {
@@ -36,13 +35,13 @@ const SampleModal = (props) => {
   };
 
   const onSubmit = (data) => {
-    sendRequest(data.sample);
-    resetField("sample");
+    methods.resetField("sample");
     setShowSampleModal(false);
+    sendRequest(data.sample);
   };
 
   const onClose = () => {
-    resetField("sample");
+    methods.resetField("sample");
     setShowSampleModal(false);
   };
 
@@ -72,7 +71,7 @@ const SampleModal = (props) => {
         >
           <button
             className="btn btn-lg btn-primary"
-            onClick={handleSubmit(onSubmit)}
+            onClick={methods.handleSubmit(onSubmit)}
             disabled={false}
             type="button"
           >

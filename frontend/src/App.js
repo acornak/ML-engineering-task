@@ -22,29 +22,33 @@ const App = () => {
   });
 
   return (
-    <div>
-      <MainNavigation />
-      <main>
-        <FormProvider {...methods}>
-          <Greetings />
-          {/* <AlertHandler sampleResponse={sampleResponse} /> */}
-          <Sample setShowSampleModal={setShowSampleModal} />
-          <SampleModal
-            setShowSampleModal={setShowSampleModal}
-            showSampleModal={showSampleModal}
-            setSampleResponse={setSampleResponse}
-            methods={methods}
-          />
-          <Predict setShowPredictModal={setShowPredictModal} />
-          <PredictModal
-            setShowPredictModal={setShowPredictModal}
-            showPredictModal={showPredictModal}
-            methods={methods}
-          />
-          <Monitor />
-        </FormProvider>
-      </main>
-    </div>
+    <>
+      <AlertHandler sampleResponse={sampleResponse} />
+      <div>
+        <MainNavigation />
+        <main>
+          <FormProvider {...methods}>
+            <Greetings />
+
+            <Sample
+              setShowSampleModal={setShowSampleModal}
+              setSampleResponse={setSampleResponse}
+            />
+            <SampleModal
+              setShowSampleModal={setShowSampleModal}
+              showSampleModal={showSampleModal}
+              setSampleResponse={setSampleResponse}
+            />
+            <Predict setShowPredictModal={setShowPredictModal} />
+            <PredictModal
+              setShowPredictModal={setShowPredictModal}
+              showPredictModal={showPredictModal}
+            />
+            <Monitor />
+          </FormProvider>
+        </main>
+      </div>
+    </>
   );
 };
 
