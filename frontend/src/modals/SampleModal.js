@@ -3,13 +3,14 @@ import axios from "axios";
 import "../css/modal.css";
 
 const SampleModal = (props) => {
-  const { showSampleModal, setShowSampleModal, methods } = props;
+  const { showSampleModal, setShowSampleModal, methods, setSampleResponse } =
+    props;
 
   if (!showSampleModal) {
     return null;
   }
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, resetField } = methods;
 
   const sendRequest = async (data) => {
     try {
@@ -22,16 +23,26 @@ const SampleModal = (props) => {
         },
       };
       const result = await axios(config);
-      console.log(result.data);
+      setSampleResponse({
+        status: "success",
+        message: result.data,
+      });
     } catch (error) {
-      console.log(error);
+      setSampleResponse({
+        status: "danger",
+        message: error.response.data,
+      });
     }
   };
 
   const onSubmit = (data) => {
-    console.log(data);
-    // add send request
     sendRequest(data.sample);
+    resetField("sample");
+    setShowSampleModal(false);
+  };
+
+  const onClose = () => {
+    resetField("sample");
     setShowSampleModal(false);
   };
 
@@ -41,7 +52,7 @@ const SampleModal = (props) => {
         <div className="modal-body">
           <label htmlFor="sample_request">
             <h1>
-              <b>Paste JSON file</b>
+              <b>Paste data in JSON form (array of objects)</b>
             </h1>
           </label>
           <textarea
@@ -66,6 +77,14 @@ const SampleModal = (props) => {
             type="button"
           >
             Add Sample to Dataset
+          </button>
+          <button
+            className="btn btn-lg"
+            onClick={() => onClose()}
+            disabled={false}
+            type="button"
+          >
+            Close
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import SampleModal from "./SampleModal";
 
 const setShowSampleModal = jest.fn();
@@ -18,11 +18,17 @@ describe("test suite for Predict Modal component", () => {
       />
     );
 
-    const modalHeader = screen.getByText("Paste JSON file");
+    const modalHeader = screen.getByText(
+      "Paste data in JSON form (array of objects)"
+    );
     expect(modalHeader).toBeInTheDocument();
 
-    const button = screen.getByText("Add Sample to Dataset");
+    const button = screen.getByText("Close");
     expect(button).toBeInTheDocument();
+
+    fireEvent.click(button);
+
+    expect(setShowSampleModal).toHaveBeenCalled();
   });
 
   it("test closed modal", () => {
