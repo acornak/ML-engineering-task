@@ -5,14 +5,13 @@ const AlertHandler = (props) => {
   const { sampleResponse } = props;
 
   if (Object.keys(sampleResponse).length === 0) {
-    console.log(sampleResponse);
     return null;
   }
 
   return (
-    <Alert type={sampleResponse.status} dismissible={true}>
-      {sampleResponse.message}
-    </Alert>
+    <div className="modal-alert">
+      <Alert type={sampleResponse.status}>{sampleResponse.message}</Alert>
+    </div>
   );
 };
 

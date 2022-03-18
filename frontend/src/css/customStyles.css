@@ -94,3 +94,97 @@ textarea {
   -moz-box-sizing: border-box; /* Firefox, other Gecko */
   box-sizing: border-box; /* Opera/IE 8+ */
 }
+
+.alert {
+  border-width: 0.1rem;
+  border-style: solid;
+  border-radius: 1rem;
+  margin-bottom: 1.6rem;
+  line-height: 1.3;
+  position: relative;
+  border-color: var(--alert-info-border);
+  background: var(--alert-info-bg);
+  color: var(--alert-info-text);
+  box-shadow: var(--alert-info-shadow);
+  padding: 2.4rem 8.8rem 2.4rem 4.8rem;
+}
+
+.alert {
+  border-radius: 10px;
+  padding: 30px 50px 30px 70px;
+  margin-bottom: 25px;
+  line-height: 1.6;
+  position: relative;
+  border: 1px solid var(--alert-info-border);
+  background: var(--alert-info-bg);
+  color: var(--alert-info-text);
+  box-shadow: var(--alert-info-shadow);
+}
+.alert:before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  display: block;
+  position: absolute;
+  top: calc(50% - 12px);
+  left: 30px;
+  -webkit-mask-position: -87px 0;
+  mask-position: -87px 0;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  background-color: var(--icon-informative-info-bg);
+}
+.alert .vismaicon-filled {
+  display: none;
+}
+.alert .btn,
+.alert > p:last-child {
+  margin-bottom: 0;
+}
+.alert a {
+  color: var(--anchor-color);
+}
+.alert.alert-success {
+  border-color: var(--alert-success-border);
+  background: var(--alert-success-bg);
+  color: var(--alert-success-text);
+  box-shadow: var(--alert-success-shadow);
+}
+.alert.alert-success:before {
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  background-color: var(--icon-informative-success-bg);
+}
+.alert.alert-warning {
+  border-color: var(--alert-warning-border);
+  background: var(--alert-warning-bg);
+  color: var(--alert-warning-text);
+  box-shadow: var(--alert-warning-shadow);
+}
+.alert.alert-warning:before {
+  -webkit-mask-position: -58px 0;
+  mask-position: -58px 0;
+  background-color: var(--icon-informative-warning-bg);
+}
+.alert.alert-danger,
+.alert.alert-error {
+  border-color: var(--alert-danger-border);
+  background: var(--alert-danger-bg);
+  color: var(--alert-danger-text);
+  box-shadow: var(--alert-danger-shadow);
+}
+.alert.alert-danger:before,
+.alert.alert-error:before {
+  -webkit-mask-position: -29px 0;
+  mask-position: -29px 0;
+  background-color: var(--icon-informative-error-bg);
+}
+.alert.alert-sm {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.alert .close {
+  position: absolute;
+  top: calc(50% - 6px);
+  right: 27px;
+}

@@ -1,7 +1,7 @@
 import React from "react";
 
 const Sample = (props) => {
-  const { setShowSampleModal } = props;
+  const { setShowSampleModal, setSampleResponse } = props;
 
   return (
     <div className="container no-padding">
@@ -16,7 +16,10 @@ const Sample = (props) => {
             <button
               type="button"
               className="btn btn-sm"
-              onClick={() => setShowSampleModal(true)}
+              onClick={() => {
+                setShowSampleModal(true);
+                setSampleResponse({});
+              }}
             >
               Add Sample
             </button>
