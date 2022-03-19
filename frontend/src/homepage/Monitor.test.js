@@ -28,7 +28,9 @@ describe("test suite for Predict component", () => {
 
     render(<Monitor />);
 
-    const header = screen.getByText("Analyse model accuracy");
+    const header = screen.getByText(
+      "Analyse model accuracy (most recent 1000 samples)"
+    );
     const spinnerElement = screen.getByTestId("spinner-element");
 
     expect(spinnerElement).toBeInTheDocument();

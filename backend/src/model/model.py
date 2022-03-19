@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn import preprocessing as prep
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline, FeatureUnion, make_pipeline
-from sklearn.metrics import precision_score, recall_score
+from sklearn.metrics import precision_score, recall_score, accuracy_score
 import dill
 import numpy as np
 
@@ -89,8 +89,6 @@ class ModelHandling:
 
         # now train the classifier
         model.fit(train, Y_train)
-
-        print(model.score(test, Y_test))
 
         dill.dump(model, open(os.path.join(FIXTURE_DIR, 'naive_bayes_classifier.pkl'), 'wb'))
 
@@ -186,6 +184,10 @@ class ModelHandling:
                 df["AccountNumber"],
                 df["PredictedAccountNumber"],
                 average="micro"
+            ),
+            "accuracy_score": accuracy_score(
+                df["AccountNumber"],
+                df["PredictedAccountNumber"]
             )
         }
 

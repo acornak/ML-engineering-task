@@ -33,8 +33,9 @@ const Monitor = () => {
       <div className="panel" style={{ borderRadius: "12px" }}>
         <div className="panel-body">
           <h1 className="no-margin">
-            <b>Analyse model accuracy</b>
+            <b>Analyse model accuracy </b>
           </h1>
+          (most recent 1000 samples)
           {!response && <Spinner />}
           {requestSuccess && (
             <div className="row" style={{ paddingTop: "25px" }}>
@@ -43,19 +44,23 @@ const Monitor = () => {
                 {response.rows}
               </div>
               <div className="col-lg-3">
-                <b>Metrics nr samples:&nbsp;</b> 1000
+                <b>Accuracy Score:&nbsp;</b>
+                {response.accuracy_score}
               </div>
               <div className="col-lg-3">
-                <b>Precision Score:&nbsp;</b> {response.precision_score}
+                <b>Precision Score:&nbsp;</b>
+                {response.precision_score}
               </div>
               <div className="col-lg-3">
-                <b>Recall Score:&nbsp;</b> {response.recall_score}
+                <b>Recall Score:&nbsp;</b>
+                {response.recall_score}
               </div>
             </div>
           )}
           {requestSuccess === false && (
             <>
-              <b>Error message:&nbsp;</b> {response}
+              <b style={{ paddingTop: "25px" }}>Error message:&nbsp;</b>
+              {response}
             </>
           )}
         </div>
