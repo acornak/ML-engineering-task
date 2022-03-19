@@ -7,7 +7,7 @@ const Sample = (props) => {
     <div className="container no-padding">
       <div className="panel" style={{ borderRadius: "12px" }}>
         <div className="panel-body">
-          <h1 className="no-margin">
+          <h1 className="no-margin" style={{ paddingBottom: "15px" }}>
             <b>Make the model Great Again!</b>
           </h1>
           Start by uploading another sample to train the model and get even more
