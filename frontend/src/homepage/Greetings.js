@@ -4,7 +4,7 @@ const Greetings = () => {
   return (
     <div className="container no-padding">
       <div className="page-heading">
-        <h1 className="no-margin">
+        <h1 className="no-margin" style={{ paddingBottom: "15px" }}>
           <b>Hi John!</b>
         </h1>
         What a beautiful day to start some predictions, isn't it?!

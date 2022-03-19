@@ -4,8 +4,7 @@ Using flask to define and initialize both endpoints
 import os
 from flask import Flask, Response, request, jsonify
 from flask_cors import cross_origin
-from model.sample_handling import SampleHandling
-from model.predict_handling import PredictHandling
+from model.model import ModelHandling
 from json_validation import JSONValidation
 
 app = Flask('Online Learning API')
@@ -32,8 +31,8 @@ def sample():
             return Response(message, status=400)
 
     # step 2: append data to samples.csv
-    sample_handling = SampleHandling(request_data)
-    status, message = sample_handling.handle_request()
+    model_handling = ModelHandling(request_data)
+    status, message = model_handling.handle_sample_request()
 
     return Response(message, status=status)
 
@@ -54,8 +53,8 @@ def predict():
         return Response(message, status=400)
 
     # step 2: run predction
-    predict_handling = PredictHandling(request_data)
-    status, message = predict_handling.handle_predict()
+    model_handling = ModelHandling(request_data)
+    status, message = model_handling.handle_predict_request()
 
     if status == 200:
         return jsonify(message.tolist())
@@ -71,7 +70,13 @@ def monitor():
     Only after 10k samples, else returns error.
     :return:
     """
-    return Response("Success", status=200)
+    model_handling = ModelHandling(None)
+    status, message = model_handling.handle_monitor_request()
+
+    if status == 200:
+        return jsonify(message)
+
+    return Response(message, status=status)
 
 
 if __name__ == '__main__':

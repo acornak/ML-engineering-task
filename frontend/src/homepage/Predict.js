@@ -7,7 +7,7 @@ const Predict = (props) => {
     <div className="container no-padding">
       <div className="panel" style={{ borderRadius: "12px" }}>
         <div className="panel-body">
-          <h1 className="no-margin">
+          <h1 className="no-margin" style={{ paddingBottom: "15px" }}>
             <b>Let's make prediction happen!</b>
           </h1>
           Click on the button to fill out data needed for model to predict

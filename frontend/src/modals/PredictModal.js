@@ -7,7 +7,6 @@ import "../css/modal.css";
 
 const PredictModal = (props) => {
   const { showPredictModal, setShowPredictModal } = props;
-  // const { handleSubmit, resetField } = methods;
   const [sentRequest, setSentRequest] = useState(false);
   const [requestSuccess, setRequestSuccess] = useState();
   const [predictedValue, setPredictedValue] = useState();
