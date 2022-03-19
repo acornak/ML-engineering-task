@@ -30,10 +30,9 @@ def sample():
         if not status:
             return Response(message, status=400)
 
+    # step 2: append data to samples.csv
     sample_handling = SampleHandling(request_data)
     sample_handling.merge_data()
-
-    # step 2: append data to samples.csv
 
     # step 3: train model with new data
 
