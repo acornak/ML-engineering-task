@@ -3,7 +3,7 @@ Unit test
 """
 import json
 import os
-from app import app
+from backend.app import app
 import pandas as pd
 import unittest
 

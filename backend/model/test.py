@@ -6,4 +6,4 @@ FIXTURE_DIR = os.path.join(
 )
 
 df = pd.read_csv(os.path.join(FIXTURE_DIR, "./samples_zidan.csv"))
-df[:10000].to_csv(os.path.join(FIXTURE_DIR, "./samples.csv"), index=False)
+df[:10000].to_csv(os.path.join(FIXTURE_DIR, "samples.csv"), index=False)

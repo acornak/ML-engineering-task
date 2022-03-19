@@ -28,7 +28,7 @@ class ModelHandling:
         """
         self.data = data
         self.model_path = os.path.join(FIXTURE_DIR, "naive_bayes_classifier.pkl")
-        self.csv_path = os.path.join(FIXTURE_DIR, "./samples.csv")
+        self.csv_path = os.path.join(FIXTURE_DIR, "samples.csv")
 
     def merge_data(self):
         """
