@@ -5,6 +5,7 @@ import os
 from flask import Flask, Response, request, jsonify
 from flask_cors import cross_origin
 from model.sample_handling import SampleHandling
+from model.predict_handling import PredictHandling
 from json_validation import JSONValidation
 
 app = Flask('Online Learning API')
@@ -32,11 +33,9 @@ def sample():
 
     # step 2: append data to samples.csv
     sample_handling = SampleHandling(request_data)
-    sample_handling.merge_data()
+    status, message = sample_handling.handle_request()
 
-    # step 3: train model with new data
-
-    return Response(["Success"], status=200)
+    return Response(message, status=status)
 
 
 @app.route('/predict', methods=['POST'])
@@ -55,9 +54,13 @@ def predict():
         return Response(message, status=400)
 
     # step 2: run predction
+    predict_handling = PredictHandling(request_data)
+    status, message = predict_handling.handle_predict()
 
-    # return Response("['Balance']", status=200)
-    return jsonify(["Balance"])
+    if status == 200:
+        return jsonify(message.tolist())
+
+    return Response(message, status=status)
 
 
 @app.route('/monitor', methods=['GET'])
