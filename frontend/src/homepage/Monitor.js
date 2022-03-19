@@ -37,8 +37,9 @@ const Monitor = () => {
           </h1>
           (most recent 1000 samples)
           {!response && <Spinner />}
+          <div className="row" style={{ paddingTop: "25px" }}></div>
           {requestSuccess && (
-            <div className="row" style={{ paddingTop: "25px" }}>
+            <>
               <div className="col-lg-3">
                 <b>Total nr samples:&nbsp;</b>
                 {response.rows}
@@ -55,11 +56,11 @@ const Monitor = () => {
                 <b>Recall Score:&nbsp;</b>
                 {response.recall_score}
               </div>
-            </div>
+            </>
           )}
           {requestSuccess === false && (
             <>
-              <b style={{ paddingTop: "25px" }}>Error message:&nbsp;</b>
+              <b>Error message:&nbsp;</b>
               {response}
             </>
           )}
