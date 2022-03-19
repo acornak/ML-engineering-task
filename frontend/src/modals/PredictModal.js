@@ -11,6 +11,7 @@ const PredictModal = (props) => {
   const [sentRequest, setSentRequest] = useState(false);
   const [requestSuccess, setRequestSuccess] = useState();
   const [predictedValue, setPredictedValue] = useState();
+  const [requestError, setRequestError] = useState();
   const methods = useFormContext();
 
   const keysArray = [
@@ -31,13 +32,13 @@ const PredictModal = (props) => {
         },
       };
       const result = await axios(config);
-      console.log(result);
       setPredictedValue(result.data[0]);
       setSentRequest(false);
       setRequestSuccess(true);
-    } catch {
+    } catch (error) {
       setSentRequest(false);
       setRequestSuccess(false);
+      setRequestError(error.response.data);
     }
   };
 
@@ -88,6 +89,7 @@ const PredictModal = (props) => {
           {requestSuccess === false && (
             <div>
               <h3>Something went wrong... Try again later.</h3>
+              Error message: {requestError}
             </div>
           )}
         </div>

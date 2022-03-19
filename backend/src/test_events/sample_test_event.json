@@ -1,7 +1,7 @@
 {
   "testEventValid": [
     {
-      "CompanyId": "int:a055470",
+      "CompanyId": "test",
       "BankEntryDate": "2016-02-29",
       "BankEntryText": "str:6cd08e4 int:49fed34",
       "BankEntryAmount": "> -1000",
@@ -10,7 +10,7 @@
       "AccountTypeName": "Balance"
     },
     {
-      "CompanyId": "int:a055470",
+      "CompanyId": "test",
       "BankEntryDate": "2016-02-29",
       "BankEntryText": "str:6cd08e4 int:49fed34",
       "BankEntryAmount": "> -1000",
@@ -19,7 +19,7 @@
       "AccountTypeName": "Profit and Loss"
     },
     {
-      "CompanyId": "int:a055470",
+      "CompanyId": "test",
       "BankEntryDate": "2016-02-29",
       "BankEntryText": "str:38248d2",
       "BankEntryAmount": "> -100",

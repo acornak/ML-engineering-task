@@ -2,13 +2,20 @@
 Unit test
 """
 import json
+import os
 from app import app
+import pandas as pd
 import unittest
 
-with open("./test_events/sample_test_event.json") as json_file:
+FIXTURE_DIR = os.path.join(
+    os.path.dirname(os.path.realpath(__file__))
+)
+
+
+with open(os.path.join(FIXTURE_DIR, "test_events", "sample_test_event.json")) as json_file:
     SAMPLE_EVENT = json.load(json_file)
 
-with open("./test_events/predict_test_event.json") as json_file:
+with open(os.path.join(FIXTURE_DIR, "test_events", "predict_test_event.json")) as json_file:
     PREDICT_EVENT = json.load(json_file)
 
 
@@ -17,6 +24,8 @@ class AppTestCase(unittest.TestCase):
         tester = app.test_client(self)
         data = json.dumps(SAMPLE_EVENT["testEventValid"])
         response = tester.post("/sample", data=data, content_type="application/json")
+
+        self.sample_cleanup()
 
         self.assertEqual(200, response.status_code)
         self.assertEqual("Success", response.data.decode())
@@ -57,6 +66,25 @@ class AppTestCase(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual("Success", response.data.decode())
+
+    @staticmethod
+    def sample_cleanup():
+        csv_path = os.path.join(FIXTURE_DIR, "model", "samples.csv")
+
+        try:
+            df = pd.read_csv(csv_path)
+        except FileNotFoundError:
+            return
+
+        df.drop(df.index[df["CompanyId"] == "test"], inplace=True)
+
+        if len(df) == 0:
+            os.remove(csv_path)
+            return
+
+        df.to_csv(csv_path, index=False)
+
+        return
 
 
 if __name__ == '__main__':
