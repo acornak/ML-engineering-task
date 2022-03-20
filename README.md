@@ -1,159 +1,114 @@
-# Assignment used for Data Engineering Position
+# Online Learning App
 
-In this assignment you will build a simple online learning API - and then sketch out how you would turn this into a production system.
+This application consists of 2 main parts: front-end using React.js framework, and back-end with API definition using Python Flask framework.
 
-The assignment has a coding part (1,2,2a) and a design part (3). Coding and Design assignments have about the same weight in our evaluation.
+## Running application
 
-**Instructions for the coding assignment:**
+To start the application, run `app.sh` script from the root directory. Script will install virtualenv package, create new virtual environment called `venv` and then activates it.
 
-You may use any technology you find convenient to work on this. 
+After that, python dependencies (`./backend/requirements.txt`) are installed as well as Node.js dependencies (`./frontend/package.json`), followed by unit tests for both parts of the application.
 
-We supply a few tips for how to work on this in Python.
+In the last step, script will run simultaneously localhost servers for both front- (port 3000) and back-end (port 5000).
 
-## The problem
-Companies often have a lot of expenses. Each payment of these expenses is in accounting terms called a financial transaction which should be entered into the financial books. But where? This is the job of the accountant to figure out. An expense for paint might go to the maintenance account, and an expense for a taxi ride might go to the account for travel expenses.
+## Back-end
 
-To help the accountant we want to add machine learning. There's just one problem. We don't have a machine learning model. Yet. This is where you come in - in this assignment you will build a self-training machine learning API for bookkeeping. 
-
-## The dataset
-
-Included in this assignment is a dataset of examples of the kinds of transaction we want to process. Your goal is to learn how to predict the `AccountNumber` from these transactions. If you're interested in learning more about the dataset see the [appendix](#Appendix) below
-
-## Part 1 - Online learning
-
-Build a server that continuously trains a machine learning model. 
-
-You can use the model contained in `model/model.py`. The quality of the model is not important to the test - you don't need to change it.
-
-Use any micro web framework you like to build the server - for Python `Flask` is an easy option.
-
-The server has a JSON API with the following endpoints.
+3 simple endpoints defined using Flask framework. All endpoints are following "fail-as-soon-as-possible" principles (e.g., request body validation) and are trying to cover most of the possible outcomes in order to always return custom generated status code and message instead of generic "Server Error".
 
 ### `/sample`
-Accepts POST requests
 
-* Accepts a list of samples from the dataset.  The format is a list of JSON dictionaries using the keys from the CSV file - and strings for all values.
-* Runs a prediction against the most recently trained model - if a model exists yet. Don't output to the user. You only need this to compute model metrics later.
-* The samples should be added to the set of previously received samples
-* Store the sample as received + the predicted `AccountNumber` - you don't have to overthink this - opening a file, adding the samples and storing it again is fine
-* Train a new version of the machine learning model using all data received so far as the training set
+Accepts POST requests only as **list of JSON dictionaries** with following keys: _CompanyId, BankEntryDate, BankEntryText, BankEntryAmount, AccountName, AccountNumber, AccountTypeName_.
+
+Before invoking ModelHandling class, the request body is validated using `jsonschema` package. Rules:
+
+- each key must be present,
+- no additional key is allowed,
+- each value must be string,
+- _AccountTypeName_ accepts only 2 values: `['Balance', 'Profit and Loss']`.
+
+If any rule is breached, endpoint returns 400: Validation Error.
+
+Next step is to merge incoming data with `samples.csv` dataset or creating file if it does not exist.
+
+After that, if model has been previously trained (model file exists), predictions for the whole datasets are made to evaluate model accuracy.
+
+Last step is to train new model using all data - existing and newly added.
+
+**Weak points**
+
+- compute limitations when processing a large amount of data.
+
+**Solution**
+
+- Clouds!
 
 ### `/predict`
-Accepts POST requests
 
-* Accepts a single sample from the dataset. The format is a JSON dictionary using the keys from the CSV file - _except_ the `AccountName`,`AccountNumber`,`AccountTypeName` fields
-* Predict the expected `AccountNumber` for a sample from the dataset
-* Return value is a JSON list containing one string element
+Accepts POST requests only as **JSON dictionaries** with following keys: _CompanyId, BankEntryDate, BankEntryText, BankEntryAmount_.
 
-##  Part 2 - Client
+Before invoking ModelHandling class, the request body is validated using `jsonschema` package. Rules:
 
-Prepare a client to call the API. Start streaming in data from the dataset. 
+- each key must be present,
+- no additional key is allowed,
+- each value must be string.
 
-### [OPTIONAL]  Part 2a - Monitoring
+If any rule is breached, endpoint returns 400: Validation Error. Same principal as `/sample` endpoint with slightly different request body validation.
 
-Add an endpoint that reports model quality. 
+If there is no model file, endponit returns 400, else the prediction is ran and returned is JSON list containing 1 string element (predicted _AccountNumber_).
 
-* Report the precision and recall of the last 1000 samples. In python you can use the `precision_score` and `recall_score` functions from 
-[scikit learn](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics) to compute this. 
+**Weak points**
 
-Use your client to report the quality after streaming in at least 10K samples.
- 
-## Part 3 - Going to production
+- current model is using obfuscated data, therefore it is possible to run predictions on gibberish data, such as _CompanyId: asdf_ etc., as there is no client-side input validation on front-end part.
 
-_This part is purely a design question - you should not write any code for this part._
+**Solution**
 
-Good news! Your manager saw your proof of concept API and wants to launch it with customers. 
+- use server-side data anonymization as a part of both `/sample` and `/predict` endpoints. In that case, user could input the real data in both cases and there could be some client-side input validation on front-end part (or warning at least).
 
-Provide a brief sketch of a 'production ready' version of the online learning API
+### `/monitor`
 
-* List out some of the problems you see with the Proof Of Concept demo.
-    * To provide a starting point, maybe you want to think about controlling access to the API, maybe you want to think about accepting multiple users or handling very large datasets. 
-    * It's up to you to come up with a list of design points - the more the better.
-* Sketch out what functionality you would add to the POC to handle the design goals you have identified
-* Provide a simple system diagram of what components would this system have and how are they linked up?
+Accepts GET requests only.
 
+Returns `precision_score`, `recall_score` and `accuracy_score` if dataset consists of more than 10,000 records. Metrics are calculated on the most recent 1000 predictions.
 
-## Guidelines
+### Unit testing
 
-## Got stuck?
-You can always email us and ask for advice or just ask question to ensure you correctly understood the task. This will not be seen as a sign of weakness, to the contrary it shows that fully understanding the problem is important to you.
+Needs a bit more attention. Current solution is not correctly implemented, as there is "live" database and model file in model directory. However, when migrating system to Cloud, mocking service endpoints will eliminate this issue.
 
-## Suggestions for improvements?
+Tested are all endpoints with test events located in separate folder for both "200" and "400" status code result.
 
-Please help us improve this assignment by suggesting changes, or making a pull request.
+## Front-end
 
-## Appendix
+Simple single-page-application with basic functions of making requests to aforementioned endpoints. Input data is handled using `react-hook-form` package.
 
-The quality of the model is not evaluated as part of this exercise - but in case you're curious here's a little background on the data
+After clicking on related button, a modal with input fields will popup.
 
-The dataset consist of expenses from 100 random companies. For each company we provide all expenses that was booked in e-conomic.
+- In case of a request to `/sample` endpoint, there is only 1 input field: textarea, where a user is prompted to input list of JSON files.
+- In case of a request to `/predict` endpoint, there are multiple textarea input fields. Inputs are automatically combined to valid JSON format and sent as request body.
 
-Description of each column in the dataset:
-- __CompanyId:__ The identifyer of the company to help you slice and dice the data in the right way.
-- __BankEntryDate *(feature)*__: The date of the financial transaction.
-- __BankEntryText *(feature)*__: The text following along with the financial transaction. This is typically machine generated, but in case of manual transactions they may be manually written by a human. _Please note that the text has been split into words before they have been hashed._
-- __BankEntryAmount *(feature)*__: The amount of the financial transaction. Expenses are negative, earnings are positive.
-- __AccountNumber *(target)*__: The account number. The uniquely identifies an account, and can therefore be used as the target variable / the class that we want to predict.
-- __AccountName__: The name of the account.
-- __AccountTypeName__: The type of the account.
+In case of `/monitor`, request is made automatically on page load.
 
-Columns marked by _(feature)_ Can optionally be used as a feature in your predictive model. All of these features are typically what you see when you look at your bank statement. The _AccountNumber_ is your target variable. The _AccountName_ and the _AccountTypeName_ are properties of the account, and hence not of direct interest to the prediction problem, but if you can come up with creative ways of using it, then feel free to do so.
+**Weak points**
 
-The rows are sorted first by _BankEntryDate_, then by _CompanyId_.
+- no front-end input validation for `/sample` request - in case of invalid data, a request is made (although failing on JSON validation step).
+- adding more metrics to monitor, a chart perhaps.
 
-Due to privacy reasons the amounts has been bucketed and the texts has been obfuscated using the following function:
+**Solution**
 
-    data = query(limit = 100) # Pandas DataFrame
+- adding custom validation rule to tetxtarea filed for `/sample` request.
 
-    def short_hash(word):
-        try:
-            int(word)
-            typ = 'int'
-        except:
-            typ = 'str'
-        bytes_ = word.encode() + secret_salt
-        sha_word = hashlib.sha512(bytes_).hexdigest()
-        return '{}:{}'.format(typ, sha_word[:7])
+### Unit testing
 
-    def obfuscate_text(string_):
-        return " ".join([short_hash(w) for w in string_.split()])
+100 % coverage on function components (except index.js and App.js, as per best practice with React application unit testing). 9 tests suites with 20 total tests, using `jest` and `react-testing-library` packages.
 
-    def modify_row(row):
-        # Translate AccountTypeName to english
-        row['AccountTypeName'] = 'Profit and Loss' \
-            if row['AccountTypeName'] == 'Drift' else 'Balance'
-        # Obfuscate AccountName
-        row['AccountName'] = short_hash(row['AccountName'])
-        # Obfuscate BankEntryText
-        row['BankEntryText'] = obfuscate_text(row['BankEntryText'])
-        # Obfuscate CompanyId
-        row['CompanyId'] = short_hash(row['CompanyId'])
+![image info](./markdown/front-end-unit-tests.png)
 
-        p_bar.update()
-        return row
+## Future work
 
-    data = data.apply(modify_row, axis=1)
+Of course, turning proposed system into production would require multiple changes to architecture. Following diagrams count on cloud services, namely Amazon Web Services and Google Cloud Platform deployment. As shown in diagrams, security, scalability of service and dataset and application decoupling principles were taken into account.
 
-    # Bin BankEntryAmount
-    data['BankEntryAmount'] = pd.cut(
-        data['BankEntryAmount'],
-        bins=[float('-inf'), -10000, -1000, -100, -10, 0, 10, 100, 1000,
-              10000, float('inf')],
-        labels=['big negative', '> -10000', '> -1000', '> -100', '> -10',
-                '< 10', '< 100', '< 1000', '< 10000', 'big positive']
-    )
+### Amazon Web Services
 
-    data.to_csv(output_filename)
+![image info](./markdown/hiring-test-aws.png)
 
-The data is a zipped `.csv` file called `bank_expenses_obfuscated.csv.zip`.
+### Google Cloud Platform
 
-## Data example
-
-Here's the top three rows from the data set. The Account* fields should be considered output variables, not input features.
-
-|   | CompanyId   | BankEntryDate | BankEntryText           | BankEntryAmount | AccountName | AccountNumber | AccountTypeName |
-|---|-------------|---------------|-------------------------|-----------------|-------------|---------------|-----------------|
-| 0 | int:a055470 | 2016-02-29    | str:6cd08e4 int:49fed34 | > -1000         | str:1e82557 | 9900          | Balance         |
-| 1 | int:a055470 | 2016-02-29    | str:6cd08e4 int:49fed34 | > -1000         | str:9ce853c | 3115          | Profit and Loss |
-| 2 | int:a055470 | 2016-02-29    | str:38248d2             | > -100          | str:a9f0788 | 2240          | Profit and Loss |
-
+![image info](./markdown/hiring-test-gcp.png)
