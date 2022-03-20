@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "install and activate virtual environment..."
+echo "activating virtual environment..."
 pip install virtualenv
 virtualenv venv
 source venv/Scripts/activate

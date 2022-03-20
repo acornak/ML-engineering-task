@@ -119,6 +119,8 @@ class ModelHandling:
         :return: status, message
         :rtype: dict
         """
+        # todo: change this! run predictions only on the new data!
+        
         self.merge_data()
 
         try:
