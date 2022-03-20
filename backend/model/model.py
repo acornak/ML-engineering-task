@@ -29,20 +29,19 @@ class ModelHandling:
         self.data = data
         self.model_path = os.path.join(FIXTURE_DIR, "naive_bayes_classifier.pkl")
         self.csv_path = os.path.join(FIXTURE_DIR, "samples.csv")
+        self.df_new_samples = pd.DataFrame.from_records(self.data)
 
     def merge_data(self):
         """
         Method to merge incoming samples with existing dataframe.
         """
-        df_new_samples = pd.DataFrame.from_records(self.data)
-
         try:
             df = pd.read_csv(self.csv_path)
         except FileNotFoundError:
-            df_new_samples.to_csv(self.csv_path, index=False)
+            self.df_new_samples.to_csv(self.csv_path, index=False)
             return
 
-        df = pd.concat([df, df_new_samples], ignore_index=True)
+        df = pd.concat([df, self.df_new_samples], ignore_index=True)
         df.to_csv(os.path.join(self.csv_path), index=False)
         return
 
@@ -52,7 +51,7 @@ class ModelHandling:
         :return: status code and messsage
         :rtype: dict
         """
-        # this should never happen due to the previous validation proces and merge_data function
+        # this should never happen due to the previous validation process and merge_data function
         # but you never know...
         if not os.path.exists(self.csv_path):
             return 400, "Data is missing"
@@ -113,6 +112,33 @@ class ModelHandling:
         data_to_predict = pd.DataFrame([row]).iloc[:, :-3]
         return loaded.predict(data_to_predict)[0]
 
+    # def handle_sample_request(self):
+    #     """
+    #     Method to handle /sample requests.
+    #     :return: status, message
+    #     :rtype: dict
+    #     """
+    #     self.merge_data()
+    #
+    #     try:
+    #         loaded = dill.load(open(self.model_path, "rb"))
+    #     except FileNotFoundError:
+    #         status, message = self.train_model()
+    #         return status, message
+    #
+    #     # run prediction for the whole dataframe
+    #     df = pd.read_csv(self.csv_path)
+    #     df["PredictedAccountNumber"] = df.apply(
+    #         lambda row: self.predict_dataset(loaded, row),
+    #         axis=1
+    #     )
+    #     df.to_csv(os.path.join(self.csv_path), index=False)
+    #
+    #     # train model
+    #     status, message = self.train_model()
+    #
+    #     return status, message
+
     def handle_sample_request(self):
         """
         Method to handle /sample requests.
@@ -120,22 +146,28 @@ class ModelHandling:
         :rtype: dict
         """
         # todo: change this! run predictions only on the new data!
-        
-        self.merge_data()
-
         try:
             loaded = dill.load(open(self.model_path, "rb"))
+            df = pd.read_csv(self.csv_path)
         except FileNotFoundError:
+            self.merge_data()
             status, message = self.train_model()
             return status, message
 
-        # run prediction for the whole dataframe
-        df = pd.read_csv(self.csv_path)
-        df["PredictedAccountNumber"] = df.apply(
-            lambda row: self.predict_dataset(loaded, row),
-            axis=1
-        )
-        df.to_csv(os.path.join(self.csv_path), index=False)
+        # run prediction for the new data using recent model
+        if "PredictedAccountNumber" not in df.columns:
+            self.merge_data()
+            df["PredictedAccountNumber"] = df.apply(
+                lambda row: self.predict_dataset(loaded, row),
+                axis=1
+            )
+            df.to_csv(os.path.join(self.csv_path), index=False)
+        else:
+            self.df_new_samples["PredictedAccountNumber"] = self.df_new_samples.apply(
+                lambda row: self.predict_dataset(loaded, row),
+                axis=1
+            )
+            self.merge_data()
 
         # train model
         status, message = self.train_model()
