@@ -1,0 +1,19 @@
+{
+  "type": "invalid",
+  "properties": {
+    "CompanyId": {
+      "type": "string"
+    },
+    "BankEntryDate": {
+      "type": "string"
+    },
+    "BankEntryText": {
+      "type": "string"
+    },
+    "BankEntryAmount": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["CompanyId", "BankEntryDate", "BankEntryText", "BankEntryAmount"]
+}

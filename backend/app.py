@@ -2,13 +2,13 @@
 Using flask to define and initialize both endpoints
 """
 import os
+from ast import literal_eval
 from flask import Flask, Response, request, jsonify
 from flask_cors import cross_origin
 from model.model import ModelHandling
-from json_validation import JSONValidation
+from validation.json_validation import JSONValidation
 
 app = Flask('Online Learning API')
-samples_path = "model/samples.csv"
 
 
 @app.route('/sample', methods=['POST'])
@@ -19,18 +19,19 @@ def sample():
     :return:
     """
     try:
-        request_data = eval(request.get_data())
+        request_data = literal_eval(request.get_data())
     except BaseException as error:
         return Response(str(error), status=400)
 
-    # step 1: validate input
+    if len(request_data) == 0:
+        return Response("Validation Error: Input is empty", status=400)
+
     for record in request_data:
         json_validation = JSONValidation("sample", record)
         status, message = json_validation.validate_json()
         if not status:
             return Response(message, status=400)
 
-    # step 2: append data to samples.csv
     model_handling = ModelHandling(request_data)
     status, message = model_handling.handle_sample_request()
 
@@ -46,13 +47,11 @@ def predict():
     """
     request_data = request.get_json()
 
-    # step 1: validate input
     json_validation = JSONValidation("predict", request_data)
     status, message = json_validation.validate_json()
     if not status:
         return Response(message, status=400)
 
-    # step 2: run predction
     model_handling = ModelHandling(request_data)
     status, message = model_handling.handle_predict_request()
 

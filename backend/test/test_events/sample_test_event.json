@@ -56,5 +56,22 @@
       "AccountTypeName": "Balance",
       "InvalidInput": "error"
     }
-  ]
+  ],
+  "testEventValidSingle":{
+    "CompanyId": "test",
+    "BankEntryDate": "2016-02-29",
+    "BankEntryText": "str:6cd08e4 int:49fed34",
+    "BankEntryAmount": "> -1000",
+    "AccountName": "str:1e82557",
+    "AccountNumber": "9900",
+    "AccountTypeName": "Balance"
+  },
+  "testEventInvalidSingle":{
+    "CompanyId": "test",
+    "BankEntryDate": "2016-02-29",
+    "BankEntryText": "str:6cd08e4 int:49fed34",
+    "BankEntryAmount": "> -1000",
+    "AccountName": "str:1e82557",
+    "AccountNumber": "9900"
+  }
 }
