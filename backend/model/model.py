@@ -1,8 +1,8 @@
 """
 Sample Handling class
 """
-import pandas as pd
 import os
+import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn import preprocessing as prep
 from sklearn.naive_bayes import MultinomialNB
@@ -21,15 +21,24 @@ class ModelHandling:
     """
     Class to handle requests made to /sample endpoint.
     """
-    def __init__(self, data):
+    def __init__(self, data, test=False):
         """
-        Initialization sof the SampleHandling class.
+        Initialization of the SampleHandling class.
         :param data: data from /sample endpoint.
         """
         self.data = data
-        self.model_path = os.path.join(FIXTURE_DIR, "naive_bayes_classifier.pkl")
-        self.csv_path = os.path.join(FIXTURE_DIR, "samples.csv")
-        self.df_new_samples = pd.DataFrame.from_records(self.data)
+
+        if test:
+            self.model_path = os.path.join(FIXTURE_DIR, "naive_bayes_classifier_test.pkl")
+            self.csv_path = os.path.join(FIXTURE_DIR, "samples_test.csv")
+        else:
+            self.model_path = os.path.join(FIXTURE_DIR, "naive_bayes_classifier.pkl")
+            self.csv_path = os.path.join(FIXTURE_DIR, "samples.csv")
+
+        try:
+            self.df_new_samples = pd.DataFrame.from_records(self.data)
+        except (TypeError, ValueError):
+            pass
 
     def merge_data(self):
         """
@@ -51,45 +60,32 @@ class ModelHandling:
         :return: status code and messsage
         :rtype: dict
         """
-        # this should never happen due to the previous validation process and merge_data function
-        # but you never know...
         if not os.path.exists(self.csv_path):
             return 400, "Data is missing"
 
         np.random.seed(2302)
 
-        # initialize dataset
         data = pd.read_csv(self.csv_path)
         data['split'] = np.random.random(data.shape[0])
-        test = data[data.split > 0.5]
         train = data[data.split <= 0.5]
-        Y_test = test.AccountNumber
         Y_train = train.AccountNumber
 
-        # let's build classifiers
-        # bag of words for the text feature
         vectorizer = CountVectorizer(max_features=10000)
 
-        # we need a few OneHotEncoders - but I don't like the interface for that and this has the same effect
-        # bag of words when all texts are max of one word => one-hot encoding
         amount_encoder = CountVectorizer(max_features=50)
         companyId_encoder = CountVectorizer(max_features=500)
 
-        # combine before doing the regression - feature union requires all features to have the same interface,
-        # so to make this work we need to project onto a single column first for each
         all_features = FeatureUnion([
             ['company', make_pipeline(self.column_selector('CompanyId'), companyId_encoder)],
             ['text', make_pipeline(self.column_selector('BankEntryText'), vectorizer)],
             ['amount', make_pipeline(self.column_selector('BankEntryAmount'), amount_encoder)],
         ])
         classifier = MultinomialNB()
-        # pipeline the whole thing
         model = Pipeline([('features', all_features), ('nb', classifier)])
 
-        # now train the classifier
         model.fit(train, Y_train)
 
-        dill.dump(model, open(os.path.join(FIXTURE_DIR, 'naive_bayes_classifier.pkl'), 'wb'))
+        dill.dump(model, open(self.model_path, 'wb'))
 
         return 200, "Success"
 
@@ -112,40 +108,12 @@ class ModelHandling:
         data_to_predict = pd.DataFrame([row]).iloc[:, :-3]
         return loaded.predict(data_to_predict)[0]
 
-    # def handle_sample_request(self):
-    #     """
-    #     Method to handle /sample requests.
-    #     :return: status, message
-    #     :rtype: dict
-    #     """
-    #     self.merge_data()
-    #
-    #     try:
-    #         loaded = dill.load(open(self.model_path, "rb"))
-    #     except FileNotFoundError:
-    #         status, message = self.train_model()
-    #         return status, message
-    #
-    #     # run prediction for the whole dataframe
-    #     df = pd.read_csv(self.csv_path)
-    #     df["PredictedAccountNumber"] = df.apply(
-    #         lambda row: self.predict_dataset(loaded, row),
-    #         axis=1
-    #     )
-    #     df.to_csv(os.path.join(self.csv_path), index=False)
-    #
-    #     # train model
-    #     status, message = self.train_model()
-    #
-    #     return status, message
-
     def handle_sample_request(self):
         """
         Method to handle /sample requests.
         :return: status, message
         :rtype: dict
         """
-        # todo: change this! run predictions only on the new data!
         try:
             loaded = dill.load(open(self.model_path, "rb"))
             df = pd.read_csv(self.csv_path)
@@ -154,7 +122,6 @@ class ModelHandling:
             status, message = self.train_model()
             return status, message
 
-        # run prediction for the new data using recent model
         if "PredictedAccountNumber" not in df.columns:
             self.merge_data()
             df["PredictedAccountNumber"] = df.apply(
@@ -169,7 +136,6 @@ class ModelHandling:
             )
             self.merge_data()
 
-        # train model
         status, message = self.train_model()
 
         return status, message
@@ -181,7 +147,8 @@ class ModelHandling:
         :rtype: dict
         """
         try:
-            loaded = dill.load(open(self.model_path, "rb"))
+            with open(self.model_path, "rb") as model_file:
+                loaded = dill.load(model_file)
         except FileNotFoundError:
             return 400, "Model is missing"
 

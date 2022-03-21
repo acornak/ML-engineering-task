@@ -30,17 +30,21 @@ class JSONValidation:
         """
         schema_path = os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
-            "validation",
+            "",
             f"{self.json_schema}_validation.json"
         )
 
-        with open(schema_path) as json_file:
-            schema = json.load(json_file)
+        try:
+            with open(schema_path) as json_file:
+                schema = json.load(json_file)
+        except FileNotFoundError:
+            return False, "Schema Error: Schema file not found"
 
         try:
             validate(instance=self.json_to_validate, schema=schema)
-        except jsonschema.exceptions.SchemaError as e:
-            return False, f"Schema Error: {e.message}"
-        except jsonschema.exceptions.ValidationError as e:
-            return False, f"Validation Error: {e.message}"
-        return True, "JSON is valid."
+        except jsonschema.exceptions.SchemaError as err:
+            return False, f"Schema Error: {err.message}"
+        except jsonschema.exceptions.ValidationError as err:
+            return False, f"Validation Error: {err.message}"
+
+        return True, "JSON is valid"
