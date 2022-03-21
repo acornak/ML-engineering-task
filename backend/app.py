@@ -2,7 +2,6 @@
 Using flask to define and initialize both endpoints
 """
 import os
-from ast import literal_eval
 from flask import Flask, Response, request, jsonify
 from flask_cors import cross_origin
 from model.model import ModelHandling
@@ -19,7 +18,7 @@ def sample():
     :return:
     """
     try:
-        request_data = literal_eval(request.get_data())
+        request_data = eval(request.get_data())
     except BaseException as error:
         return Response(str(error), status=400)
 
