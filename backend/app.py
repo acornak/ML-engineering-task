@@ -17,9 +17,10 @@ def sample():
     Function to process sample - accepts only POST requests.
     :return:
     """
+    request_data = request.get_data()
     try:
-        request_data = eval(request.get_data())
-    except BaseException as error:
+        json.loads(request_data)
+    except ValueError as error:
         return Response(str(error), status=400)
 
     if len(request_data) == 0:
