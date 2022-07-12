@@ -2,6 +2,7 @@
 Using flask to define and initialize both endpoints
 """
 import os
+import json
 from flask import Flask, Response, request, jsonify
 from flask_cors import cross_origin
 from model.model import ModelHandling
